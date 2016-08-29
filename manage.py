@@ -24,34 +24,31 @@ def deploy():
 
 @manager.option('-t', '--title', dest='title', default=None)
 def createpost(title):
+
     if title is None:
         title = input("Post title: ")
     if title.strip() == '':
         exit("Post title cannot be blank")
 
+    # generate path based on slug and date
     slug = slugify(title) 
-    t = datetime.now()
-    filename = "%d-%d-%d-%s" % (
-        t.year,
-        t.month,
-        t.day,
-        slug 
-    )
-    i = 1
-    while(len(glob.glob(os.path.join('content', 'posts', filename))) != 0):
-        filename = "%d-%d-%d-%s-%d" % (
-            t.year,
-            t.month,
-            t.day,
-            slug,
-            i
-        )
+    datestring = datetime.now().strftime('%Y-%m-%d')
+    pathname = '%s-%s' % (datestring, slug)
+    filename = slug
+    # check for duplicates, add a number to the end if there are any
+    i = 0
+    while(len(glob.glob(os.path.join('content', 'posts', pathname))) != 0):
         i += 1
-    path = os.path.join('content', 'posts', filename)
+        pathname = '%s-%s-%d' % (datestring, slug, i)
+        filename = '%s-%d' % (slug, i)
+
+    # create tree
+    path = os.path.join('content', 'posts', pathname)
     os.mkdir(path)
     os.mkdir(os.path.join(path, 'assets'))
 
-    with open(os.path.join(path, '%s.md' % slug), 'w') as fh:
+    # create post markdown file, write a default header
+    with open(os.path.join(path, '%s.md' % filename), 'w') as fh:
         header = {
             'title': title,
             'date': datetime.now(),
