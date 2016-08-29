@@ -7,12 +7,12 @@ from flask import Flask, render_template, abort
 from flask_frozen import Freezer
 from flask_flatpages import FlatPages
 
-from utils import post_url_generator, page_url_generator
+from utils import post_url_generator, page_url_generator, get_post_from_slug
 
 DEBUG = True
 FLATPAGES_ROOT = 'content'
 FLATPAGES_EXTENSION = '.md'
-FLATPAGES_MARKDOWN_EXTENSIONS = ['gfm']
+#FLATPAGES_MARKDOWN_EXTENSIONS = ['gfm']
 
 freezer = Freezer()
 flatpages = FlatPages()
@@ -29,19 +29,21 @@ def page(path):
 
 
 def blog():
-    posts = [p for p in post_url_generator()]
+    urls = [p for p in post_url_generator()]
+    posts = []
+    for i in range(0, len(urls)):
+        page = flatpages.get(get_post_from_slug(urls[i][1]['slug']))
+        posts.append({
+            'title': page.meta.get('title'),
+            'date': page.meta.get('date'),
+            'slug': urls[i][1]['slug']
+        })
+    posts.sort(key=lambda p:p['date'], reverse=True)
     return render_template('blog.html', posts=posts)
 
 
 def post(slug):
-    f = glob.glob(
-        os.path.join(FLATPAGES_ROOT, 'posts', '*%s' % slug)
-    )
-    if len(f) == 0:
-        abort(404)
-    page = flatpages.get_or_404(
-        os.path.join(f[0].replace(FLATPAGES_ROOT + '/', ''), slug)
-    )
+    page = flatpages.get_or_404(get_post_from_slug(slug))
     template = 'index.html'
     return render_template('post.html', page=page)
 

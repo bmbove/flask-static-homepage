@@ -1,1 +1,17 @@
-{{posts}}
+{% extends 'base.html' %}
+
+{% block title%}
+Blog
+{% endblock %}
+
+
+{% block content %}
+<ul>
+{% for p in posts %}
+  <li>
+    {%if p.date %}{{p.date.strftime('%b %-d %Y, %X')}}{%endif%} &raquo;
+    <a href="{{url_for('post', slug=p.slug)}}">{{p.title}}</a>
+  </li>
+{%endfor%}
+</ul>
+{%endblock%}

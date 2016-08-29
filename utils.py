@@ -21,6 +21,19 @@ def page_url_generator():
             yield 'page', {'path': m.group('path').replace('.md', '')}
 
 
+# Gets post filename (sans extension) from slug
+def get_post_from_slug(slug):
+    f = glob.glob(
+        os.path.join(app.config['FLATPAGES_ROOT'], 'posts', '*%s' % slug)
+    )
+    if len(f) == 0:
+        return None
+    return os.path.join(
+        f[0].replace(app.config['FLATPAGES_ROOT'] + '/', ''),
+        slug
+    )
+
+
 def slugify(text, delim=u'-'):
     _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
     result = []
