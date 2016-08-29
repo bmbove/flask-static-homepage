@@ -16,9 +16,25 @@
 </head>
 <body>
   <div class="container">
-{% block content %}
+    <div class="header">
+      <a class='title' href="/">brianbove.com</a>
+      <a href="{{url_for('home')}}">home</a>
+      <a href="{{url_for('page', path='about')}}">about</a>
+      <a href="{{url_for('blog')}}">blog</a>
+      <a href="{{url_for('page', path='contact')}}">contact me</a>
+      <a href="{{url_for('page', path='projects')}}">projects</a>
+      <a href="{{url_for('page', path='resume')}}">resume</a>
+    </div>
 
-{%endblock%}
+    {% block content %}
+    {%endblock%}
+
+    <div class="footer">
+      Brian Bove <br/>
+      Electrical and Computer Engineer <br/>
+      <a href='https://www.github.com/bmbove'>(gh) bmbove</a> </br>
+      <a href='mailto:bmbove@gmail.com'>(email) bmbove@gmail.com</a>
+    </div>
   </div>
 </body>
 </html>

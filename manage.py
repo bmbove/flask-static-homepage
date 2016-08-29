@@ -3,6 +3,7 @@ from datetime import datetime
 import glob
 import os
 import yaml
+import shutil
 import sys
 
 from flask_script import Manager, Server
@@ -108,11 +109,11 @@ def flush():
     for d in dirs:
         shutil.rmtree(d)
 
-    files = glob.glob(os.path.join('content', '/*.md'))
+    files = glob.glob(os.path.join('content', '*.md'))
     for f in files:
         os.remove(f)
 
-    with open(os.path.join('content', 'home.md' % filename), 'w') as fh:
+    with open(os.path.join('content', 'home.md'), 'w') as fh:
         header = {
             'title': 'Home',
             'date': datetime.now(),
