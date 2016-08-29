@@ -1,7 +1,7 @@
-`./app.py build` builds static distribution into ./build
+`./manage.py build` builds static distribution into ./build
 
-`./app.py run` runs flask's built in server on :8000
+`./manage.py run` runs flask's built in server on :5000
 
-branches automatically deployed when pushed/merged:
-* `master`: production, live site.
-* `staging`: staging/dev server
+`./manage.py createpost`   creates an empty blog post
+
+`./manage.py deploy`    deploys to configured server via rsync
