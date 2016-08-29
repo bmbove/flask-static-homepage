@@ -1,5 +1,25 @@
+import glob
+import os
 import re
 from unicodedata import normalize
+from flask import current_app as app
+
+# Generates post URLs for Flask-Frozen
+def post_url_generator():
+    for d in glob.glob(os.path.join(app.config['FLATPAGES_ROOT'], 'posts/*')):
+        match = re.search('[0-9]+(?P<slug>.*)', d)
+        m = re.search('[0-9]+-[0-9]+-[0-9]+-(?P<slug>[\w-]+)', d)
+        if m is not None:
+            yield 'post', {'slug': m.group('slug')}
+
+
+# Generates page URLs for Flask-Frozen
+def page_url_generator():
+    for d in glob.glob(os.path.join(app.config['FLATPAGES_ROOT'], '*.md')):
+        m = re.search('(?P<path>[\w-]+)\.md', d)
+        if m is not None:
+            yield 'page', {'path': m.group('path').replace('.md', '')}
+
 
 def slugify(text, delim=u'-'):
     _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')

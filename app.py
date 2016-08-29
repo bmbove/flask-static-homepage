@@ -7,8 +7,9 @@ from flask import Flask, render_template, abort
 from flask_frozen import Freezer
 from flask_flatpages import FlatPages
 
+from utils import post_url_generator, page_url_generator
+
 DEBUG = True
-POST_DIR = os.path.join('content', 'posts')
 FLATPAGES_ROOT = 'content'
 FLATPAGES_EXTENSION = '.md'
 FLATPAGES_MARKDOWN_EXTENSIONS = ['gfm']
@@ -16,25 +17,11 @@ FLATPAGES_MARKDOWN_EXTENSIONS = ['gfm']
 freezer = Freezer()
 flatpages = FlatPages()
 
-# Generates post URLs for Flask-Frozen
-def post_url_generator():
-    for d in glob.glob(os.path.join(FLATPAGES_ROOT, 'posts/*')):
-        match = re.search('[0-9]+(?P<slug>.*)', d)
-        m = re.search('[0-9]+-[0-9]+-[0-9]+-(?P<slug>[\w-]+)', d)
-        if m is not None:
-            yield 'post', {'slug': m.group('slug')}
-
-
-# Generates page URLs for Flask-Frozen
-def page_url_generator():
-    for d in glob.glob(os.path.join(FLATPAGES_ROOT, '*.md')):
-        m = re.search('(?P<path>[\w-]+)\.md', d)
-        if m is not None:
-            yield 'page', {'path': m.group('path').replace('.md', '')}
 
 def home():
     page = flatpages.get_or_404('home')
     return render_template('page.html', page=page)
+
 
 def page(path):
     page = flatpages.get_or_404(path)
