@@ -6,10 +6,11 @@ Blog
 
 
 {% block content %}
+<h2>Blog Posts</h2>
 <ul>
 {% for p in posts %}
-  <li>
-    {%if p.date %}{{p.date.strftime('%b %-d %Y, %X')}}{%endif%} &raquo;
+  <li class='post-link'>
+    <span class='date'>{%if p.date %}{{p.date.strftime('%b %-d %Y, %X')}}{%endif%}</span> &raquo;
     <a href="{{url_for('post', slug=p.slug)}}">{{p.title}}</a>
   </li>
 {%endfor%}

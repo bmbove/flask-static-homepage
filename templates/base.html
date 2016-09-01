@@ -26,13 +26,15 @@
       <a href="{{url_for('page', path='resume')}}">resume</a>
     </div>
 
+    <div class="content">
     {% block content %}
     {%endblock%}
+    </div>
 
     <div class="footer">
       Brian Bove <br/>
       Electrical and Computer Engineer <br/>
-      <a href='https://www.github.com/bmbove'>(gh) bmbove</a> </br>
+      <a href='https://www.github.com/bmbove'><span class='github-icon'></span> bmbove</a> </br>
       <a href='mailto:bmbove@gmail.com'>(email) bmbove@gmail.com</a>
     </div>
   </div>
