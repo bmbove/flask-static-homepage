@@ -5,18 +5,20 @@ import re
 
 from flask import Flask, render_template, abort
 from flask_frozen import Freezer
-from flask_flatpages import FlatPages
+from flask_flatpages import FlatPages, pygments_style_defs
 
 from utils import post_url_generator, page_url_generator, get_post_from_slug
 
 DEBUG = True
 FLATPAGES_ROOT = 'content'
 FLATPAGES_EXTENSION = '.md'
-#FLATPAGES_MARKDOWN_EXTENSIONS = ['gfm']
+FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'fenced_code']
 
 freezer = Freezer()
 flatpages = FlatPages()
 
+def pygments_css():
+    return pygments_style_defs('solarizeddark'), 200, {'Content-Type': 'text/css'}
 
 def home():
     page = flatpages.get_or_404('home')
@@ -59,6 +61,7 @@ def create_app():
     app.add_url_rule('/blog/', 'blog', blog)
     app.add_url_rule('/blog/<string:slug>/', 'post', post)
     app.add_url_rule('/<path:path>/', 'page', page)
+    app.add_url_rule('/pygments.css', 'pygments_css', pygments_css)
 
     freezer.register_generator(post_url_generator)
     freezer.register_generator(page_url_generator)

@@ -16,17 +16,18 @@ will be handy and it was definitely a very practical application of course
 material, I decided to give it an upgrade and add a display to it to make it
 more usable.
 
-Desired Features:
-================
- * Display voltages of both channels (one positive and one negative wrt ground)
- * Display current output of both channels
- * Display all of this data at the same time (single screen)
- * Digital, so microcontroller involved. I chose to use an AVR.
- * AVR programmed in plain C (no Wiring/Arduino stuff)
+## Design
 
-<br/>
-Design Considerations:
----------------------------
+### Desired Features:
+
+* Display voltages of both channels (one positive and one negative wrt ground)
+* Display current output of both channels
+* Display all of this data at the same time (single screen)
+* Digital, so microcontroller involved. I chose to use an AVR.
+* AVR programmed in plain C (no Wiring/Arduino stuff)
+
+### Considerations:
+
 The unregulated voltages reach +/-17V and the regulated voltages are between
 +/-2-13V, so I can't measure them directly with the onboard ADC. These
 voltages will have to be scaled down. The negative voltage may/will have to be
@@ -46,9 +47,8 @@ for uniformity and safety's sake, using the -17V side has a couple advantages,
 with the main one being that there is no risk of negative voltages on the 
 ADC pins of the microcontroller damaging things.
 
-Design
---------
--------------------------------------------------------------------------------------------
+### Design
+
 I used the psu ground as the display/AVR ground. I could have scale the voltages
 with simple voltage dividers, but I had to invert the negative
 voltage, so it made more sense to use an inverting op amp for both scaling and
@@ -78,9 +78,8 @@ and well-documented
 I chose to use an ATmega328p as my microcontroller, since I have a small stock
 pile of them thanks to some samples I received from Atmel some time ago.
 
-Build
-------
--------------------------------------------------------------------------------------------
+## Build
+
 The build isn't particularly interesting- there's no cool hardware or any
 interesting problems to solve besides where to put things. Trying to route
 almost 20 resistors around the op amp IC was a challenge. 
@@ -106,9 +105,8 @@ a time. Though I had an abundance of pins on the AVR, I went with 4-bit mode
 (4 pins, 4 wires) to save some time and space. I also tied the read select pin
 to ground on the LCD since I wouldn't be reading from it.
 
-Software
------------
--------------------------------------------------------------------------------------------
+## Software
+
 I've never programmed a microcontroller in C prior to this. My experience with C
 is/was pretty limited and is mostly from making modifications here and there
 to open source software that I use. Even so, I don't think the language is as
@@ -128,26 +126,28 @@ they need to be, then pulse the EN pin according to the datasheet. The
 initialization process is all done 4 bits at a time, then after that, all
 communication is 8 bits (but still just 4 bits at a time). 
 
-    // display driver needs 8 bits per character but can accept
-    // 4 bits twice for less wires
-    void _write_byte(uint8_t to_write){
+```c
+// display driver needs 8 bits per character but can accept
+// 4 bits twice for less wires
+void _write_byte(uint8_t to_write){
 
-        uint8_t bottom = to_write & 0x0F;
-        uint8_t top = (to_write >> 4) & 0x0F;
+    uint8_t bottom = to_write & 0x0F;
+    uint8_t top = (to_write >> 4) & 0x0F;
 
-        int i;
-    
-        // send the top 4 bits
-        for(i=0; i < 4; i++)
-            _set_pin(port[i], pin[i], (top >> i & 0x01));
-        _pulse_enable();
+    int i;
 
-        // send the bottom 4 bits
-        for(i=0; i < 4; i++)
-            _set_pin(port[i], pin[i], (bottom >> i & 0x01));
-        _pulse_enable();
+    // send the top 4 bits
+    for(i=0; i < 4; i++)
+        _set_pin(port[i], pin[i], (top >> i & 0x01));
+    _pulse_enable();
 
-    }
+    // send the bottom 4 bits
+    for(i=0; i < 4; i++)
+        _set_pin(port[i], pin[i], (bottom >> i & 0x01));
+    _pulse_enable();
+
+}
+```
 
 Eventually, I was able to get the LCD displaying words (that I told it to
 display). I also discovered that it was possible to set the LCD as stdout so
@@ -156,12 +156,14 @@ a stream that streams it's input (one byte at a time) to a function, in this cas
 "put_char", which writes the byte it received to the LCD. Then you set that
 stream as stdout.
 
+```c
     FILE lcd_stream = FDEV_SETUP_STREAM(
         put_char,
         NULL,
         _FDEV_SETUP_WRITE
     );
     stdout = &lcd_stream;
+```
 
 ![To Crush Your Enemies](/static/image/blog/psu/crushyourenemies.jpg)
 
@@ -173,86 +175,94 @@ scaled down, so realistically, I'd be able to achieve about 25mV resolution.
 this would be fine for measuring voltages, as I doubt my regulating circuit
 is capable of maintaining that kind of stability.
 
-I needed higher resolution though for measuring the current, at least for
-the lower end. I read a little bit on [oversampling](http://www.atmel.com/Images/doc8003.pdf), and the technique seemed 
-simple enough- for every extra bit of resolution, the number of samples 
-needed increases by a factor of 4. So, for 12-bit resolution, I would
-need to average 16 samples together for each reading.
+I needed higher resolution though for measuring the current, at least for the
+lower end. I read a little bit on
+[oversampling](http://www.atmel.com/Images/doc8003.pdf), and the technique
+seemed simple enough- for every extra bit of resolution, the number of samples
+needed increases by a factor of 4. So, for 12-bit resolution, I would need to
+average 16 samples together for each reading.
 
-Another issue with ADC readings, especially with the added resolution, was noise.
-To try to limit this, I used an [exponential moving average](http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average).
+Another issue with ADC readings, especially with the added resolution, was
+noise.  To try to limit this, I used an [exponential moving
+average](http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average).
 
-    void adc_add_reading(struct ADCCh *ch, uint16_t reading){
-        // oversample to get 12 bit resolution.
-        // wait for 16 new samples (factor of 4 per extra bit)
-        // then compute new voltage value using exponentially weighted
-        // running average. 
-        reading <<= 2;
-        if(ch->sample_count == 15){ 
+```c
+void adc_add_reading(struct ADCCh *ch, uint16_t reading){
+    // oversample to get 12 bit resolution.
+    // wait for 16 new samples (factor of 4 per extra bit)
+    // then compute new voltage value using exponentially weighted
+    // running average. 
+    reading <<= 2;
+    if(ch->sample_count == 15){ 
 
-            ch->samples[15] = reading;
+        ch->samples[15] = reading;
 
-            uint8_t i;
-            uint16_t average = 0;
-            for(i=0; i < 16; i++){
-                average += ch->samples[i];
-            }
-            average >>= 4;
-            ch->value = average;
-
-            uint32_t new_v= ((uint32_t)ch->value * AREF * 10000) >> 12;
-            int32_t prev_v = ch->voltage - ((ch->voltage * SCALE)/100);
-            ch->voltage = ((new_v * SCALE)/100) + prev_v;
-            ch->voltage = new_v;
-
-            ch->sample_count = 0;
+        uint8_t i;
+        uint16_t average = 0;
+        for(i=0; i < 16; i++){
+            average += ch->samples[i];
         }
-        else{
-            ch->samples[ch->sample_count] = reading;
-            ch->sample_count++;
-        }
+        average >>= 4;
+        ch->value = average;
+
+        uint32_t new_v= ((uint32_t)ch->value * AREF * 10000) >> 12;
+        int32_t prev_v = ch->voltage - ((ch->voltage * SCALE)/100);
+        ch->voltage = ((new_v * SCALE)/100) + prev_v;
+        ch->voltage = new_v;
+
+        ch->sample_count = 0;
     }
+    else{
+        ch->samples[ch->sample_count] = reading;
+        ch->sample_count++;
+    }
+}
+```
 
 When a new ADC reading is available, an interrupt is triggered that adds
 the new sample to the average (for that channel) and changes to the
 next channel in the list. 
 
-    // Interrupt- when a new ADC reading is available
-    ISR(ADC_vect){
+```c
+// Interrupt- when a new ADC reading is available
+ISR(ADC_vect){
 
-        uint8_t low = ADCL;
-        uint8_t high = ADCH;
-        uint16_t reading = ((high << 8) | low);
+    uint8_t low = ADCL;
+    uint8_t high = ADCH;
+    uint16_t reading = ((high << 8) | low);
 
-        // add reading in, switch to next channel
-        adc_add_reading(adc_lst->cur, reading);
-        next_adc(adc_lst);
-        ADMUX = (ADMUX & 0xF0) | adc_lst->cur->channel;
+    // add reading in, switch to next channel
+    adc_add_reading(adc_lst->cur, reading);
+    next_adc(adc_lst);
+    ADMUX = (ADMUX & 0xF0) | adc_lst->cur->channel;
 
-    }
+}
+```
 
 I was taking a data structures class at the time,
 so I got fancy and implemented the ADC queue as a circularly linked list.
 
-    struct ADCCh{
-        // ADC channel
-        uint8_t channel;
-        // samples taken
-        uint16_t samples[16];
-        // count of samples to put towards next value
-        uint8_t sample_count;
-        // raw adc value
-        uint16_t value;
-        // computed voltage
-        uint32_t voltage;
-        // next channel
-        struct  ADCCh *next;
-    };
-    struct ADCList{
-        uint16_t size;
-        struct ADCCh *front;
-        struct ADCCh *cur;
-    };
+```c
+struct ADCCh{
+    // ADC channel
+    uint8_t channel;
+    // samples taken
+    uint16_t samples[16];
+    // count of samples to put towards next value
+    uint8_t sample_count;
+    // raw adc value
+    uint16_t value;
+    // computed voltage
+    uint32_t voltage;
+    // next channel
+    struct  ADCCh *next;
+};
+struct ADCList{
+    uint16_t size;
+    struct ADCCh *front;
+    struct ADCCh *cur;
+};
+```
 
 To convert the ADC readings to real values, I took about 25 samples at
 varying voltages and currents for every measurement and obtained a fit function
@@ -260,9 +270,8 @@ through the Sheets app on Google Drive. Since the 328p doesn't have an FPU,
 all math was done in fixed point, then the decimal was placed when it came
 time to push the number to the LCD.
 
-Results
----------
--------------------------------------------------------------------------------------------
+## Results
+
 The whole thing worked nearly as expected. Testing with a digital multimeter, 
 the voltage measurements were very accurate (somewhat more so that the DMM, since
 it only goes to tenths precision). I knew that it would be difficult to obtain
@@ -277,11 +286,10 @@ measurements) turned out to be around 860mA
 
 [Complete code on Github](https://github.com/bmbove/avr_psu_display)
 
-References
-=======
- * [A classmate's implementation of a similar idea](https://github.com/dylanmackenzie/avr-power-supply-display)
- * [AVR121: Enhancing ADC resolution by
-oversampling](http://www.atmel.com/Images/doc8003.pdf)
- * [Bit Twiddling Hacks](https://graphics.stanford.edu/~seander/bithacks.html)
- * [The ADC of the AVR](http://maxembedded.com/2011/06/the-adc-of-the-avr/)
- * [Analog to Digital Converter - AVR Beginners](http://www.avrbeginners.net/architecture/adc/adc.html)
+## References
+
+* [A classmate's implementation of a similar idea](https://github.com/dylanmackenzie/avr-power-supply-display)
+* [AVR121: Enhancing ADC resolution by oversampling](http://www.atmel.com/Images/doc8003.pdf)
+* [Bit Twiddling Hacks](https://graphics.stanford.edu/~seander/bithacks.html)
+* [The ADC of the AVR](http://maxembedded.com/2011/06/the-adc-of-the-avr/)
+* [Analog to Digital Converter - AVR Beginners](http://www.avrbeginners.net/architecture/adc/adc.html)
