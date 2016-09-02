@@ -5,7 +5,7 @@ date: 2014-01-05 20:53:41.143241
 longer hosted at the listed URL. I don't remember the specifics of how
 everything worked, but since it looks like the code was licensed under the GPL,
 I'll re-host it here:*
-<center>[Firmware Download](http://www.brianbove.com/static/files/rio_recv.zip "Slimrio Firmware")</center>
+<center>[Firmware Download](assets/rio_recv.zip "Slimrio Firmware")</center>
 <center>[Documentation on Wayback Machine](https://web.archive.org/web/20110810013823/http://empeg.org.uk/slimrio/index.html "slimrio")</center>
 
 At a recent thrift store run, I came across an interesting looking piece of
@@ -13,7 +13,7 @@ equipment- the front looked like a car stereo, but on the back, there were
 audio outs and an Ethernet port. Figuring this could turn in to something
 useful, I grabbed it with a set of speakers for $7.
 
-![Dell Network Audio Receiver](/static/image/blog/rioreceiver/front_pic.jpg)
+![Dell Network Audio Receiver](assets/front_pic.jpg)
 
  The Dell/Rio Receiver was a home stereo that acted as a network MP3 player. It
  was released in 2001 at a price point of $350. Inside, it boasts a 74MHz ARMv7
@@ -50,8 +50,8 @@ could see it was receiving from the SSDP script. I fired up
 [Wireshark](https://www.wireshark.org/ "Wireshark") to see exactly what was
 going in the exchange:
 
-[![Wireshark :-(](/static/image/blog/rioreceiver/wireshark_bad.jpg "Wireshark
-:-(")](/static/image/blog/rioreceiver/wireshark_bad.jpg)
+[![Wireshark :-(](assets/wireshark_bad.jpg "Wireshark
+:-(")](assets/wireshark_bad.jpg)
 
 It turns out that NFSv2 was disabled on my system:  
 
@@ -81,10 +81,10 @@ $ cat /proc/fs/nfsd/versions
 I fired up Wireshark and turned the receiver on again. This time, things were a
 lot more interesting:
 
-[![Wireshark :-)](/static/image/blog/rioreceiver/wireshark_working.jpg
-"Wireshark :-)")](/static/image/blog/rioreceiver/wireshark_working.jpg)
+[![Wireshark :-)](assets/wireshark_working.jpg
+"Wireshark :-)")](assets/wireshark_working.jpg)
 
-![It works!](/static/image/blog/rioreceiver/front_startup.jpg "It works!")
+![It works!](assets/front_startup.jpg "It works!")
 
 Great success! The receiver now boots into the custom kernel and reaches out to
 the local network searching for a Squeezebox server. Though I believe there are
@@ -95,8 +95,8 @@ their suite of plugins as well as localized radio and information.
 First things first- let's test it out:
 
 <video width=100% controls='controls' preload='auto' style='background:black;'>
-    <source src='/static/image/blog/rioreceiver/riovid_1.mp4' type='video/mp4'>
-    <source src='/static/image/blog/rioreceiver/riovid_1.ogg' type='video/ogg'>
+    <source src='assets/riovid_1.mp4' type='video/mp4'>
+    <source src='assets/riovid_1.ogg' type='video/ogg'>
     **Your browser doesn't support this video!**
 </video>
 
@@ -107,7 +107,7 @@ so I can jam out while I cook, but wires running all over the place may create
 a hazardous twerking environment and the last thing I need is to be rushed to
 the ER wearing my Miley outfit. To make this work, I'll have to go wireless.
 
-![Router](/static/image/blog/rioreceiver/router.jpg "WRT160N v3")
+![Router](assets/router.jpg "WRT160N v3")
 
 Another thrift store find at $3... I paid $60 for one of these 3 years ago...
 the Linksys WRT160N v3. I loaded up [dd-wrt](http://www.dd-wrt.com) on it and
@@ -120,7 +120,7 @@ wired it in to the 12V on the supply. I took the router out of it's shell so
 that I could fit it inside the receiver's case. I tested before I closed things
 up:
 
-![Dangling Router](/static/image/blog/rioreceiver/dangle_router.jpg "Dangling Router")
+![Dangling Router](assets/dangle_router.jpg "Dangling Router")
 
 It may be overkill, but it's cheap, simple, and it works. 
 
@@ -130,12 +130,12 @@ permanent. I'm going to find a smaller cable - 12 inches or so - and drill a
 hole in the receiver's case to run the cable from the Ethernet port to the
 (now) internal router.
 
-![Kitchen Radio](/static/image/blog/rioreceiver/on_counter.jpg "In the kitchen")
+![Kitchen Radio](assets/on_counter.jpg "In the kitchen")
 
 And of course, a video (the sound part-way through is my phone crying to be plugged in):
 <video width=100% controls='controls' preload='auto' style='background:black;'>
-    <source src='/static/image/blog/rioreceiver/riovid_2.mp4' type='video/mp4'>
-    <source src='/static/image/blog/rioreceiver/riovid_2.ogg' type='video/ogg'>
+    <source src='assets/riovid_2.mp4' type='video/mp4'>
+    <source src='assets/riovid_2.ogg' type='video/ogg'>
     **Your browser doesn't support this video!**
 </video>
 

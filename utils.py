@@ -33,6 +33,15 @@ def get_post_from_slug(slug):
         slug
     )
 
+# Gets post path (sans extension) from slug
+def get_path_from_slug(slug):
+    f = glob.glob(
+        os.path.join(app.config['FLATPAGES_ROOT'], 'posts', '*%s' % slug)
+    )
+    if len(f) == 0:
+        return None
+    return f[0].replace(app.config['FLATPAGES_ROOT'] + '/', '')
+
 
 def slugify(text, delim=u'-'):
     _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
