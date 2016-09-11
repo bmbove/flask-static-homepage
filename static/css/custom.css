@@ -102,7 +102,7 @@ code{
     background-color: #002b36;
 }
 
-p img{
+p img,video{
     max-height: 420px;
     margin-left: auto;
     margin-right: auto;
@@ -110,7 +110,7 @@ p img{
 }
 
 @media (max-width: 700px) {
-    p img {
+    p img,video {
         max-height: 1000px;
         margin-left: auto;
         margin-right: auto;

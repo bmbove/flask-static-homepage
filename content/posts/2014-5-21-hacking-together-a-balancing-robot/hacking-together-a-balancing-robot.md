@@ -1,15 +1,38 @@
 title: Hacking Together a Balancing Robot
 date: 2014-05-21 12:03:21.234141
 
-As part of my digital logic design course, I had to put together a project to display in the class booth at the [2014 OSU Engineering Expo](http://engineering.oregonstate.edu/expo2014 "2014 Oregon State University Engineering Expo"). The only requirement was that the project made use of some piece of hardware that we had used in class or in a previous engineering class: the [Teensy 2.0](http://www.pjrc.com/store/teensy.html), the [Wunderboard](http://eecs.oregonstate.edu/education/hardware/wunder.2/), the [Lattice MachX02 FPGA](http://www.latticesemi.com/en/Products/DevelopmentBoardsAndKits/MachXO2BreakoutBoard.aspx), and/or the [Tekbot Robot Kit](http://eecs.oregonstate.edu/education/hardware/tekbot/). 
+As part of my digital logic design course, I had to put together a project to
+display in the class booth at the [2014 OSU Engineering
+Expo](http://engineering.oregonstate.edu/expo2014 "2014 Oregon State University
+Engineering Expo"). The only requirement was that the project made use of some
+piece of hardware that we had used in class or in a previous engineering class:
+the [Teensy 2.0](http://www.pjrc.com/store/teensy.html), the
+[Wunderboard](http://eecs.oregonstate.edu/education/hardware/wunder.2/), the
+[Lattice MachX02
+FPGA](http://www.latticesemi.com/en/Products/DevelopmentBoardsAndKits/MachXO2BreakoutBoard.aspx),
+and/or the [Tekbot Robot
+Kit](http://eecs.oregonstate.edu/education/hardware/tekbot/). 
 
-Brainstorming for a few weeks left me with some pretty obscure ideas that, while possibly awesome builds, would have been mostly beyond the capabilities of the hardware I was using and would also have taken too much time. After browsing some articles on [Hackaday](http://www.hackaday.com "Hackaday") and watching some cool youtube videos, I decided to go with the tried-and-true inverted pendulum- a self-balancing robot.
+Brainstorming for a few weeks left me with some pretty obscure ideas that,
+while possibly awesome builds, would have been mostly beyond the capabilities
+of the hardware I was using and would also have taken too much time. After
+browsing some articles on [Hackaday](http://www.hackaday.com "Hackaday") and
+watching some cool youtube videos, I decided to go with the tried-and-true
+inverted pendulum- a self-balancing robot.
 
 ## Build
 
-The parts were ordered from [Pololu](http://www.pololu.com): a TB6612FNG motor controller to drive the two DC motors; a MMA7361LC 3-axis accelerometer and a LPY550AL dual axis gyro for pitch sensing. To start out, everything was breadboarded so I could figure out how to interface with each sensor. I used an Arduino to read from the sensors and control the motor speed based on sensor output. This stage accumulated into having an Arduino and breadboard electrical-taped to the body of the robot and me attempting to control it over a serial connection, getting much too far ahead of myself. Thankfully I don't have any pictures of this.
+The parts were ordered from [Pololu](http://www.pololu.com): a TB6612FNG motor
+controller to drive the two DC motors; a MMA7361LC 3-axis accelerometer and a
+LPY550AL dual axis gyro for pitch sensing. To start out, everything was
+breadboarded so I could figure out how to interface with each sensor. I used an
+Arduino to read from the sensors and control the motor speed based on sensor
+output. This stage accumulated into having an Arduino and breadboard
+electrical-taped to the body of the robot and me attempting to control it over
+a serial connection, getting much too far ahead of myself. Thankfully I don't
+have any pictures of this.
 
-![Prototyping](/static/image/blog/expobot/breadboard.jpg)
+![Prototyping](assets/images/breadboard.jpg)
 
 After I managed to make sense out of the gyro and accelerometer readings and
 use the motor controller, I got to soldering a board together. The board was
@@ -38,9 +61,9 @@ for the microcontroller. I added a programming header so I could program the
 microcontroller with an Arduino (I don't own some fancy dedicated AVR
 programmer) and a couple LEDs for increased coolness.
 
-![Completed Board](/static/image/blog/expobot/board.jpg)
+![Completed Board](assets/images/board.jpg)
 
-<center>![Hello World](/static/image/blog/expobot/blink.gif)</center>
+![Hello World](assets/images/blink.gif)
 
 Now that it was all together, I strapped it on the robot body and started to
 code. The first step was figuring out how to get a pitch in degrees from the
@@ -161,16 +184,9 @@ managed to get the little guy to stand on his own feet (or whatever) for the
 first time:
 
 <video controls="controls" width="640" height="360">
-	<source src="http://www.brianbove.com/static/image/blog/expobot/first_balance.mp4" type="video/mp4" />
-	<source src="http://www.brianbove.com/static/image/blog/expobot/first_balance.webm" type="video/webm" />
-	<source src="http://www.brianbove.com/static/image/blog/expobot/first_balance.ogv" type="video/ogg" />
-	<object type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" width="640" height="360">
-		<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
-		<param name="allowFullScreen" value="true" />
-		<param name="wmode" value="transparent" />
-		<param name="flashVars" value="config={'playlist':[{'url':'http%3A%2F%2Fwww.brianbove.com%2Fstatic%2Fimage%2Fblog%2Fexpobot%2Ffirst_balance.mp4','autoPlay':false}]}" />
-		<span title="No video playback capabilities on your device! Sorry!">First Time Balancing</span>
-	</object>
+	<source src="assets/first_balance.mp4" type="video/mp4" />
+	<source src="assets/first_balance.webm" type="video/webm" />
+	<source src="assets/first_balance.ogv" type="video/ogg" />
 </video>
 
 With this part of the project (mostly) done, I also incorporated the Teensy 2.0
@@ -192,16 +208,9 @@ to his robot and we decided to hold an execution to test his aim and my
 balance:
 
 <video controls="controls" width="640" height="360">
-	<source src="http://www.brianbove.com/static/image/blog/expobot/execution.mp4" type="video/mp4" />
-	<source src="http://www.brianbove.com/static/image/blog/expobot/execution.webm" type="video/webm" />
-	<source src="http://www.brianbove.com/static/image/blog/expobot/execution.ogv" type="video/ogg" />
-	<object type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" width="640" height="360">
-		<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
-		<param name="allowFullScreen" value="true" />
-		<param name="wmode" value="transparent" />
-		<param name="flashVars" value="config={'playlist':[{'url':'http%3A%2F%2Fwww.brianbove.com%2Fstatic%2Fimage%2Fblog%2Fexpobot%2Fexecution.mp4','autoPlay':false}]}" />
-		<span title="No video playback capabilities, please download the video below">Firing Squad</span>
-	</object>
+	<source src="assets/execution.mp4" type="video/mp4" />
+	<source src="assets/execution.webm" type="video/webm" />
+	<source src="assets/execution.ogv" type="video/ogg" />
 </video>
  
 ## Results
