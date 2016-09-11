@@ -5,7 +5,9 @@ import os
 import yaml
 import shutil
 import sys
+from subprocess import call
 
+from flask import current_app
 from flask_script import Manager, Server
 from app import create_app, freezer
 
@@ -20,8 +22,10 @@ def build():
 
 @manager.command
 def deploy():
-    assert False, "Not implemented yet"
-
+    try:
+        call(current_app.config['DEPLOY_CMD'], shell=True)
+    except Exception as e:
+        print(e)
 
 @manager.option('-t', '--title', dest='title', default=None)
 def createpage(title):
