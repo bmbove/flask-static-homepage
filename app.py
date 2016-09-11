@@ -7,11 +7,16 @@ from flask import Flask, render_template, abort, send_from_directory
 from flask_frozen import Freezer
 from flask_flatpages import FlatPages, pygments_style_defs
 
+from config import *
 from utils import *
 
+# flask debug option, no reason to change this
 DEBUG = True
+# directory where flatpages should look for files
 FLATPAGES_ROOT = 'content'
+# extension that flatpages should try to read and parse
 FLATPAGES_EXTENSION = '.md'
+# enables triple-backticks for surrounding code blocks
 FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'fenced_code']
 
 freezer = Freezer()

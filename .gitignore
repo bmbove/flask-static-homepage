@@ -9,5 +9,5 @@ _mailinglist
 *.db
 *.sqlite
 uploaded
-local_config.py
+config.py
 build
