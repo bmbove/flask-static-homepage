@@ -23,6 +23,7 @@ def build():
 @manager.command
 def deploy():
     try:
+        build()
         call(current_app.config['DEPLOY_CMD'], shell=True)
     except Exception as e:
         print(e)
