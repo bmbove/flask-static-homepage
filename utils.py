@@ -7,12 +7,22 @@ from flask import current_app as app
 # Generates post URLs for Flask-Frozen
 def post_url_generator():
     for d in glob.glob(os.path.join(app.config['FLATPAGES_ROOT'], 'posts/*')):
-        match = re.search('[0-9]+(?P<slug>.*)', d)
+        #match = re.search('[0-9]+(?P<slug>.*)', d)
         m = re.search('[0-9]+-[0-9]+-[0-9]+-(?P<slug>[\w-]+)', d)
         if m is not None:
-            print(m.group('slug'))
             yield 'post', {'slug': m.group('slug')}
 
+# Generates post asset URLs for Flask-Frozen
+def asset_url_generator():
+    assets = glob.glob('content/posts/*/assets/**/*.*', recursive=True)
+    for a in assets:
+        if os.path.isfile(a):
+            m = re.search('[0-9]+-[0-9]+-[0-9]+-(?P<slug>[\w-]+)', a)
+            a = re.sub('content/posts/(.*)/assets/', '', a)
+            yield 'post_asset', {
+                'slug': m.group('slug'),
+                'filename': a
+            }
 
 # Generates page URLs for Flask-Frozen
 def page_url_generator():

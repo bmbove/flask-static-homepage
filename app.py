@@ -7,8 +7,6 @@ from flask import Flask, render_template, abort, send_from_directory
 from flask_frozen import Freezer
 from flask_flatpages import FlatPages, pygments_style_defs
 
-#from utils import post_url_generator, page_url_generator, get_post_from_slug
-#import * from utils
 from utils import *
 
 DEBUG = True
@@ -83,5 +81,6 @@ def create_app():
 
     freezer.register_generator(post_url_generator)
     freezer.register_generator(page_url_generator)
+    freezer.register_generator(asset_url_generator)
 
     return app
