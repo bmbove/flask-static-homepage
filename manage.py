@@ -66,23 +66,30 @@ def createpost(title):
 
     # generate path based on slug and date
     slug = slugify(title) 
-    datestring = datetime.now().strftime('%Y-%m-%d')
-    pathname = '%s-%s' % (datestring, slug)
+    #datestring = datetime.now().strftime('%Y-%m-%d')
+    now = datetime.now()
+    base_path = os.path.join(
+        'content',
+        'posts',
+        str(now.year),
+        str(now.month),
+        '-'.join(slug.split('-')[0:5])
+    );
+    pathname = base_path
     filename = slug
     # check for duplicates, add a number to the end if there are any
     i = 0
-    while(len(glob.glob(os.path.join('content', 'posts', pathname))) != 0):
+    while(len(glob.glob(pathname)) != 0):
         i += 1
-        pathname = '%s-%s-%d' % (datestring, slug, i)
+        pathname = '%s-%d' % (base_path, i)
         filename = '%s-%d' % (slug, i)
 
     # create tree
-    path = os.path.join('content', 'posts', pathname)
-    os.mkdir(path)
-    os.mkdir(os.path.join(path, 'assets'))
+    os.makedirs(pathname)
+    os.mkdir(os.path.join(pathname, 'assets'))
 
     # create post markdown file, write a default header
-    with open(os.path.join(path, '%s.md' % filename), 'w') as fh:
+    with open(os.path.join(pathname, '%s.md' % filename), 'w') as fh:
         header = {
             'title': title,
             'date': datetime.now(),
@@ -95,7 +102,7 @@ def createpost(title):
         )
         fh.write('\n\n')
 
-    print('Created post %s in %s' % (title, path))
+    print('Created post %s in %s' % (title, pathname))
 
 
 @manager.command

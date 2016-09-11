@@ -1,0 +1,6 @@
+instead of adding images/videos/etc to repo, maybe add asset dir to git ignore and instead keep a 
+list of files on a CDN or something.
+
+add tags somehow. parse, then add links between posts?
+
+RSS would be neat. some people use it.

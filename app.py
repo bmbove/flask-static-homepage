@@ -59,6 +59,7 @@ def post_asset(slug, filename):
         post_path,
         'assets'
     )
+    print(asset_path)
     return send_from_directory(asset_path, filename)
 
 def create_app():
@@ -73,7 +74,7 @@ def create_app():
     app.add_url_rule('/blog/<string:slug>/', 'post', post)
     # \/blog\/(?P<slug>[\w-]+)\/assets\/(?P<filename>[\w-_\.]+)
     app.add_url_rule(
-        '/blog/<string:slug>/assets/<string:filename>',
+        '/blog/<string:slug>/assets/<path:filename>',
         'post_asset',
         post_asset
     )

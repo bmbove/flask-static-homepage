@@ -10,6 +10,7 @@ def post_url_generator():
         match = re.search('[0-9]+(?P<slug>.*)', d)
         m = re.search('[0-9]+-[0-9]+-[0-9]+-(?P<slug>[\w-]+)', d)
         if m is not None:
+            print(m.group('slug'))
             yield 'post', {'slug': m.group('slug')}
 
 
