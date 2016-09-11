@@ -4,17 +4,12 @@ title: 'Sous-vide on the Cheap: Slow Cooker Conversion'
 
 ![Beep boop](assets/images/00-final.jpg)
 
-About a month ago, I ordered a handful of [W1209] temperature controllers on
-eBay for about $2 a piece. I figured that if they actually work, it's a really
-good deal- I know I can't build something similar for less than that price.
-
-
 Something about ordering eBay electronics from China is enjoyable in an odd
 sort of way for me. There's all these neat little breakout boards and modules,
 most loaded with counterfeit components and ripped-off designs. The shipping
 estimates are hilarious- "Your item will arrive in 2 to 12 weeks". It's like
-I can't quite believe it's a real thing until a something that I've forgotten 
-that I've ordered shows up at my door.
+I can't quite believe it's a real thing until something that I've forgotten 
+I've ordered shows up at my door.
 
 This week, the temperature controllers that I'd forgotten about were delivered.
 After some examination and probing around, I decided they were good enough to 
@@ -24,12 +19,16 @@ put to the test with a rudimentary sous-vide set up.
 
 ### [W1209] Temperature Controller
 
+
 ![W1209](assets/images/01-w1209.jpg)
 
-The controller could easily have its own post, and will as soon as I have
-some time to put in to it. The setup is pretty straight-forward; a sealed 
-probe on about 1.5' of wire, a 3x7 segment display, a couple buttons, some
-screw terminals, a microcontroller, and a relay.
+The temperature controller, labeled [W1209-Ver1.2], cost a little over $2. 
+There's no way that I could build something similar for less than that, so as
+long as it works, these things are a great deal. The controller could easily
+have its own post, and will as soon as I have some time to put in to it.
+The setup is pretty straight-forward; a sealed probe on about 1.5' of wire, a
+3x7 segment display, a couple buttons, some screw terminals, a microcontroller,
+and a relay.
 
 ![nothing says reliable like 100 write cycles before data integrity issues](assets/images/02-stm8.jpg)
 
@@ -43,7 +42,7 @@ on reverse engineering the controller, which will include the assembly and
 hopefully some C code with the same functionality. 
 
 I was surprised to find that the relay is actually rated to handle a sizeable
-load- 20A at 120V AC. I had ordered an SSR because I figured I'd need it to do
+load: 20A at 120V AC. I had ordered an SSR because I figured I'd need it to do
 anything useful, but it turns out that the relay will handle pretty much any
 counter-top appliance. The downside of using the relay is that the system 
 needs a bit of current to close the switch, and also requires some extra drive
