@@ -1,7 +1,7 @@
 title: Power Supply Gets a Display
 date: 2015-02-23 00:20:32.735200
 
-![Complete](/static/image/blog/psu/completed.jpg)
+![Complete](assets/images/completed.jpg)
 
 This project has its roots in another bit of coursework from last term. In the 
 lab that went along with my microelectronics course, we had to build a bench
@@ -56,14 +56,14 @@ inverting on the negative channel. I used I supposed what amounts to a
 difference amplifier on the positive channel to avoid the inverting (can't 
 have negative gain on a non-inverting amplifier, which I need). 
 
-![Inverting Amplifier for Negative Voltage](/static/image/blog/psu/vminusmeasureschem.jpg)
+![Inverting Amplifier for Negative Voltage](assets/images/vminusmeasureschem.jpg)
 
 I decided to measure the current by taking the voltage on either side of my
 test resistor and putting it through a difference amplifier with high gain. The
 same circuit works for both channels- the inputs needed to be swapped though
 for a positive measurement.
 
-![Difference Amplifier for Current Measurement](/static/image/blog/psu/imeasureschem.jpg)
+![Difference Amplifier for Current Measurement](assets/images/imeasureschem.jpg)
 
 Taking the usual operating ranges into consideration, I set the gain of all the
 op amps to result in a meaningful output between 0 and 5V. The output was 
@@ -85,7 +85,7 @@ interesting problems to solve besides where to put things. Trying to route
 almost 20 resistors around the op amp IC was a challenge. 
 
 
-![Board- front and back](/static/image/blog/psu/board.jpg)
+![Board- front and back](assets/images/board.jpg)
 
 This would have been
 a great opportunity to design and etch my own board, and though I did think
@@ -93,7 +93,7 @@ about it, I was quickly overwhelmed by KiCAD and picking part footprints.
 Oh well. My homemade [wiring pencil](https://en.wikipedia.org/wiki/Wiring_pencil)
 made short work of the point-to-point stuff.
 
-![Intravenous copper injections](/static/image/blog/psu/pencil.jpg)
+![Intravenous copper injections](assets/images/pencil.jpg)
 
 Interestingly enough, I did have to build a simplified replica of the circuit used 
 for regulation on the PSU to step the voltage down from +/-17V to +/-15V (and
@@ -165,7 +165,7 @@ stream as stdout.
     stdout = &lcd_stream;
 ```
 
-![To Crush Your Enemies](/static/image/blog/psu/crushyourenemies.jpg)
+![To Crush Your Enemies](assets/images/crushyourenemies.jpg)
 
 Once I could write arbitrary strings to the LCD, I turned my attention to
 taking proper ADC readings. The ATmega328p has a 10-bit ADC sitting behind an
