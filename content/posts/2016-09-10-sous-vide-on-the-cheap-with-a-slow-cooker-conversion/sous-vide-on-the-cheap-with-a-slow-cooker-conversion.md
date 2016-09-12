@@ -142,9 +142,21 @@ out.
 
 ![egg](assets/images/12-egg.jpg)
 
-The third test is in progress:
+The third test is in progress. I've thrown in an ultra-cheap cut of bottom round:
 
 ![bottom round roast](assets/images/13-roast.jpg)
+
+_Update_: Third test finished. Here's the roast after 24 hours at 56.5&#x2103;,
+then about a minute per side of pan searing:
+
+![roast all done](assets/images/14-roast-done.jpg)
+
+It's perfectly tender, has a great consistency, and isn't dry in the least
+bit. It's slightly bland by itself, but after mixing a little salt into the
+leftover juice and dipping the pieces in it, it's great. I think maybe 
+spending some time in brine or some salty marinade might let the meat stand on
+its own for next time.
+
 
 ## Conclusion
 
