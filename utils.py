@@ -3,24 +3,41 @@ import os
 import re
 from unicodedata import normalize
 from flask import current_app as app
+from slugify import slugify
 
 # Generates post URLs for Flask-Frozen
 def post_url_generator():
-    for d in glob.glob(os.path.join(app.config['FLATPAGES_ROOT'], 'posts/*')):
-        #match = re.search('[0-9]+(?P<slug>.*)', d)
-        m = re.search('[0-9]+-[0-9]+-[0-9]+-(?P<slug>[\w-]+)', d)
-        if m is not None:
-            yield 'post', {'slug': m.group('slug')}
+    posts_dir = os.path.join(app.config['FLATPAGES_ROOT'], 'posts/*')
+    for d in glob.glob(posts_dir):
+        m = re.search('(?P<year>20[0-9]{2})$', d)
+        year = m.groups()[0]
+        for year_dir in glob.glob(os.path.join(d, '*')):
+            dir_name = year_dir.split("/")[-1:][0]
+            restr = r'(?P<month>[0-9]{2})-(?P<day>[0-9]{2})-(?P<slug>[\w-]+)'
+            m = re.search(restr, dir_name)
+            if m is not None:
+                yield 'post', {
+                    'year': year,
+                    'month': m.group('month'),
+                    'day': m.group('day'),
+                    'slug': m.group('slug')
+                }
 
 # Generates post asset URLs for Flask-Frozen
 def asset_url_generator():
-    assets = glob.glob('content/posts/*/assets/**/*.*', recursive=True)
+    assets = glob.glob('content/posts/*/*/assets/**/*.*', recursive=True)
     for a in assets:
+        print(a)
         if os.path.isfile(a):
-            m = re.search('[0-9]+-[0-9]+-[0-9]+-(?P<slug>[\w-]+)', a)
+            restr = r'(20[0-9]{2})\/([0-9]{2})-([0-9]{2})-(?P<slug>[\w-]+)'
+            m = re.search(restr, a)
+            groups = m.groups()
             a = re.sub('content/posts/(.*)/assets/', '', a)
             yield 'post_asset', {
-                'slug': m.group('slug'),
+                'year': groups[0],
+                'month': groups[1],
+                'day': groups[2],
+                'slug': groups[3],
                 'filename': a
             }
 
@@ -33,10 +50,15 @@ def page_url_generator():
 
 
 # Gets post filename (sans extension) from slug
-def get_post_from_slug(slug):
-    f = glob.glob(
-        os.path.join(app.config['FLATPAGES_ROOT'], 'posts', '*%s' % slug)
+def get_post(year, month, day, slug):
+    dir_name = '%s-%s-%s' % (month, day, slug)
+    path = os.path.join(
+        app.config['FLATPAGES_ROOT'], 
+        'posts', 
+        year,
+        dir_name
     )
+    f = glob.glob(path)
     if len(f) == 0:
         return None
     return os.path.join(
@@ -45,20 +67,19 @@ def get_post_from_slug(slug):
     )
 
 # Gets post path (sans extension) from slug
-def get_path_from_slug(slug):
-    f = glob.glob(
-        os.path.join(app.config['FLATPAGES_ROOT'], 'posts', '*%s' % slug)
+def get_post_path(year, month, day, slug):
+    dir_name = '%s-%s-%s' % (month, day, slug)
+    path = os.path.join(
+        app.config['FLATPAGES_ROOT'], 
+        'posts', 
+        year,
+        dir_name
     )
+    f = glob.glob(path)
     if len(f) == 0:
         return None
     return f[0].replace(app.config['FLATPAGES_ROOT'] + '/', '')
 
 
-def slugify(text, delim=u'-'):
-    _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
-    result = []
-    for word in _punct_re.split(text.lower()):
-        word = normalize('NFKD', word)
-        if word:
-            result.append(word)
-    return delim.join(result)
+def makeslug(text, delim=u'-'):
+    return slugify(text, max_length=30, word_boundary=True)

@@ -39,7 +39,15 @@ def blog():
     urls = [p for p in post_url_generator()]
     posts = []
     for i in range(0, len(urls)):
-        page = flatpages.get(get_post_from_slug(urls[i][1]['slug']))
+        post_data = urls[i][1]
+        page = flatpages.get(
+            get_post(
+                post_data['year'],
+                post_data['month'],
+                post_data['day'],
+                post_data['slug']
+            )
+        )
         posts.append({
             'title': page.meta.get('title'),
             'date': page.meta.get('date'),
@@ -49,20 +57,20 @@ def blog():
     return render_template('blog.html', posts=posts)
 
 
-def post(slug):
-    page = flatpages.get_or_404(get_post_from_slug(slug))
+def post(year, month, day, slug):
+    page = flatpages.get_or_404(get_post(year, month, day, slug))
     template = 'index.html'
     return render_template('post.html', page=page)
 
 
-def post_asset(slug, filename):
-    post_path = get_path_from_slug(slug)
+def post_asset(year, month, day, slug, filename):
+    post_path = get_post_path(year, month, day, slug)
     asset_path = os.path.join(
         'content',
         post_path,
         'assets'
     )
-    print(asset_path)
+    #print(asset_path)
     return send_from_directory(asset_path, filename)
 
 def create_app():
@@ -74,10 +82,15 @@ def create_app():
 
     app.add_url_rule('/', 'home', home)
     app.add_url_rule('/blog/', 'blog', blog)
-    app.add_url_rule('/blog/<string:slug>/', 'post', post)
-    # \/blog\/(?P<slug>[\w-]+)\/assets\/(?P<filename>[\w-_\.]+)
     app.add_url_rule(
-        '/blog/<string:slug>/assets/<path:filename>',
+        '/blog/<string:year>/<string:month>/<string:day>/<string:slug>/', 
+        'post', 
+        post
+    )
+
+    app.add_url_rule(
+        ('/blog/<string:year>/<string:month>/<string:day>/<string:slug>/' 
+         'assets/<path:filename>'),
         'post_asset',
         post_asset
     )

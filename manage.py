@@ -11,7 +11,7 @@ from flask import current_app
 from flask_script import Manager, Server
 from app import create_app, freezer
 
-from utils import slugify
+from utils import makeslug 
 
 manager = Manager(create_app)
 manager.add_command('runserver', Server(host='0.0.0.0', port='8000'))
@@ -37,7 +37,7 @@ def createpage(title):
         exit("Page title cannot be blank")
 
     # generate path based on slug and date
-    slug = slugify(title) 
+    slug = makeslug(title) 
     filename = '%s' % slug
     # check for duplicates, add a number to the end if there are any
     i = 0
@@ -70,15 +70,14 @@ def createpost(title):
         exit("Post title cannot be blank")
 
     # generate path based on slug and date
-    slug = slugify(title) 
+    slug = makeslug(title) 
     #datestring = datetime.now().strftime('%Y-%m-%d')
     now = datetime.now()
     base_path = os.path.join(
         'content',
         'posts',
         str(now.year),
-        str(now.month),
-        '-'.join(slug.split('-')[0:5])
+        "%s-%s-%s" % (str(now.month).zfill(2), str(now.day).zfill(2), slug)
     );
     pathname = base_path
     filename = slug

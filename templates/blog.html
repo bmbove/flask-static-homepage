@@ -11,7 +11,7 @@ Blog
 {% for p in posts %}
   <li class='post-link'>
     <span class='date'>{%if p.date %}{{p.date.strftime('%b %-d %Y, %X')}}{%endif%}</span> &raquo;
-    <a href="{{url_for('post', slug=p.slug)}}">{{p.title}}</a>
+    <a href="{{url_for('post', year=p.date.year, month='%0.2d' % p.date.month, day='%0.2d' % p.date.day, slug=p.slug)}}">{{p.title}}</a>
   </li>
 {%endfor%}
 </ul>
