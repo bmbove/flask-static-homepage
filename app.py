@@ -1,3 +1,4 @@
+from datetime import datetime
 import glob
 import markdown
 import os
@@ -6,6 +7,7 @@ import re
 from flask import Flask, render_template, abort, send_from_directory
 from flask_frozen import Freezer
 from flask_flatpages import FlatPages, pygments_style_defs
+from werkzeug.contrib.atom import AtomFeed
 
 from config import *
 from utils import *
@@ -33,6 +35,37 @@ def home():
 def page(path):
     page = flatpages.get_or_404(path)
     return render_template('page.html', page=page)
+
+def atom_feed():
+    feed = AtomFeed('Recent Blog Postings',
+                    feed_url='http://www.brianbove.com/atom.xml',
+                    url='http://www.brianbove.com/')
+    post_list = post_url_generator()
+    for p in post_list:
+        post_data = p[1]
+        page = flatpages.get(
+            get_post(
+                post_data['year'],
+                post_data['month'],
+                post_data['day'],
+                post_data['slug']
+            )
+        )
+        path = "%s/%s/%s/%s" % (
+            post_data['year'],
+            post_data['month'],
+            post_data['day'],
+            post_data['slug']
+        )
+        feed.add(
+            page.meta['title'],
+            content_type='html',
+            url='http://www.brianbove.com/blog/%s/' % path,
+            author='Brian Bove',
+            updated=page.meta['date'],
+            published=page.meta['date']
+        )
+    return feed.get_response()
 
 
 def blog():
@@ -82,6 +115,7 @@ def create_app():
 
     app.add_url_rule('/', 'home', home)
     app.add_url_rule('/blog/', 'blog', blog)
+    app.add_url_rule('/atom.xml', 'atom_feed', atom_feed)
     app.add_url_rule(
         '/blog/<string:year>/<string:month>/<string:day>/<string:slug>/', 
         'post', 
