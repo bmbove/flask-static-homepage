@@ -1,6 +1,6 @@
-date: 2016-10-29 23:07:04.784839
+date: 2016-10-30 01:01:08.207729
 tags: ''
-title: Static Site and Blog with Frozen-Flask
+title: Switchover to a Static Site with Frozen-Flask
 
 This site's been running on a Django backend for 3 years now. Looking back at 
 my first post (which is like 4 posts down from this one... it hasn't been a 

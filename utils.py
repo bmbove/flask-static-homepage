@@ -82,4 +82,4 @@ def get_post_path(year, month, day, slug):
 
 
 def makeslug(text, delim=u'-'):
-    return slugify(text, max_length=30, word_boundary=True)
+    return slugify(text)
