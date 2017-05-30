@@ -15,8 +15,8 @@ developing the emulator core.
 Part 1 of this series covers the core emulation of the Gameboy's **Sharp 
 LR35902 CPU**, which is essentially a modified **Z80**. The **Zilog Z80** was 
 designed to be binary-compatible with the **Intel 8080**, but also makes use of
-an "extended" instruction set that allows 256 additional instructions. For the
-most part, I'm not going to go into specifics of the processor or ISA because 
+an "extended" instruction set that allows 256 additional instructions. 
+I'm not going to go into specifics of the processor or ISA because 
 I'm not qualified to do so, especially with the huge amount of resources 
 available that already cover the LR35902 and Z80. For the most part, it's 
 assumed that the reader is familiar with the general construction and operation
@@ -94,10 +94,12 @@ I found this to be the best way to organize the registers since it allows
 extra logic in the getter/setter functions (mainly for `AF`):
 
 ```c
+/* get AF */
 static uint16_t af(){
     return ((uint16_t)(reg.a) << 8) | reg.f;
 }
 
+/* set AF */
 static void af_set(uint16_t val){
     /* The bottom nibble is masked out for f */
     reg.a = (uint8_t)(( val & 0xFF00) >> 8);
@@ -111,10 +113,12 @@ static void af_set(uint16_t val){
 
 (....)
 
+/* get BC */
 static uint16_t bc(){
     return ((uint16_t)(reg.b) << 8) | reg.c;
 }
 
+/* set BC */
 static void bc_set(uint16_t val){
     reg.b = (uint8_t)( (val & 0xFF00) >> 8);
     reg.c = (uint8_t)(val & 0x00FF);
@@ -147,10 +151,12 @@ struct Flags_T {
 
 (....)
 
+/* get Zero flag */
 static uint8_t zero(){
     return (reg.f >> 7) & 0x01;
 }
 
+/* set Zero flag */
 static void zero_set(uint8_t val){
     reg.f = (reg.f & ~(1 << 7)) | ((val != 0) << 7);
 }
@@ -322,7 +328,7 @@ to allow a game to modify the cartridge ROM, but the emulator will definitely
 need to be allowed to do it at some point if it's ever going to load a program.
 
 The getters are straight-forward- find the array that holds the requested 
-address and return the data there. Later, there will have a whole mess of 
+address and return the data there. Later, there will need to be a whole mess of 
 modifications for the hardware I/O map.
 
 ```c
@@ -423,8 +429,9 @@ Interfacing
 Conceptually, computers are ridiculously simple machines. They know how to do
 a certain number of things, and are provided with a list of these things to do
 in a certain order. They just keep reading the list and doing these things until
-the list runs out (or makes them do the same things over and over forever).
-Connecting the CPU and memory together gives us the fetch and execute cycle:
+the list runs out (or makes them do the same things over and over forever). 
+Connecting the CPU and memory together with a fetch and execute cycle gives us
+a way to read and follow that list:
 
 1. Grab the opcode that's stored at the memory address held in the PC register.
 2. Increment the PC register
@@ -489,21 +496,21 @@ step of the execution to stdout.
 ```c
 uint8_t main(void){
     /* LD A,0x00; load 0x00 into reg A */
-    mem.set(0x0001, 0x3E);
-    mem.set(0x0002, 0x00);
+    mem.set(0x0000, 0x3E);
+    mem.set(0x0001, 0x00);
     /* LD C,0x03; load 0x03 into reg C */
-    mem.set(0x0003, 0x0E);
-    mem.set(0x0004, 0x03);
+    mem.set(0x0002, 0x0E);
+    mem.set(0x0003, 0x03);
     /* DEC C; decrement C */
-    mem.set(0x0005, 0x0D);
+    mem.set(0x0004, 0x0D);
     /* CP C; compare C with A */
-    mem.set(0x0006, 0xB9);
-    /* JP NZ,0x005; jump if zero flag isn't set to 0x0000 */
-    mem.set(0x0007, 0xC2);
-    mem.set(0x0008, 0x05);
-    mem.set(0x0009, 0x00);
+    mem.set(0x0005, 0xB9);
+    /* JP NZ,0x004; jump if zero flag isn't set to PC=0x0004 */
+    mem.set(0x0006, 0xC2);
+    mem.set(0x0007, 0x05);
+    mem.set(0x0008, 0x00);
     /* STOP */
-    mem.set(0x000A, 0x10);
+    mem.set(0x0009, 0x10);
 
     /* initialize the program counter to 0 */
     reg.pc = 0x0000;
@@ -660,7 +667,7 @@ CB C0
 Failed
 ```
 
-Debugging failures is battle that gets tougher as you go. The first couple are
+Debugging failures is a battle that gets tougher as you go. The first couple are
 easy- maybe B didn't get decremented properly, or the stack pointer wasn't
 incremented after pushing something on to the stack. Once the low-hanging fruit
 is taken care of, it's possible that you'll find tests that have no output at
