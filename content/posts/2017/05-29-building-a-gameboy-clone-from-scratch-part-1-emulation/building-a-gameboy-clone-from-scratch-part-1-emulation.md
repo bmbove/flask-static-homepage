@@ -151,14 +151,14 @@ struct Flags_T {
 
 (....)
 
-/* get Zero flag */
-static uint8_t zero(){
-    return (reg.f >> 7) & 0x01;
+/* get Carry flag */
+static uint8_t carry(){
+    return (reg.f >> 4) & 0x01;
 }
 
-/* set Zero flag */
-static void zero_set(uint8_t val){
-    reg.f = (reg.f & ~(1 << 7)) | ((val != 0) << 7);
+/* set Carry flag */
+static void carry_set(uint8_t val){
+    reg.f = (reg.f & ~(1 << 4)) | ((val != 0) << 4);
 }
 
 (....)
