@@ -261,12 +261,15 @@ waiting to be decoded.
 Memory
 ======
 
-The LR35902 has a 16-bit address bus and a single address space. Most of my
-knowledge and experience working with processors at this level comes from 
-microcontrollers- mainly AVR's and STM32 chips. Those both have a separate
-address space for program memory and SRAM, which essentially makes it impossible
+The LR35902 has a 16-bit address bus and a single address space (
+[Von Neumann Architecture](https://en.wikipedia.org/wiki/Von_Neumann_architecture)).
+Most of my knowledge and experience working with processors at this level comes
+from microcontrollers- mainly AVR's and STM32 (Cortex M4) chips. 
+Those both have a separate address space for program memory and SRAM (
+[Harvard Architecture](https://en.wikipedia.org/wiki/Harvard_architecture)),
+which essentially makes it impossible
 for a program to modify it's own code, since instructions cannot be grabbed 
-and executed from SRAM. The Gameboy's single address space allows for some
+and executed from RAM. The Gameboy's single address space allows for some
 pretty neat tricks like [programming a game within a game](
 http://hackaday.com/2012/11/24/programming-a-game-boy-while-playing-pokemon/). 
 
