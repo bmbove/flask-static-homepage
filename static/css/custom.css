@@ -95,6 +95,7 @@ ul{
 
 .codehilite{
     padding-left: 3px;
+    font-size: 1.2rem;
 }
 
 code{
@@ -117,4 +118,23 @@ p img,video{
         width: 100%;
         display: block;
     }
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  border-top: 1px solid black;
+  line-height: .5em;
+
+}
+
+table tr td,th{
+  min-width: 20px;
+  padding: 5px 15px 5px 15px!important;
+  text-align: center;
+}
+
+
+table,th,td{
+  border: 1px solid white;
 }

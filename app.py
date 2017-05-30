@@ -19,7 +19,7 @@ FLATPAGES_ROOT = 'content'
 # extension that flatpages should try to read and parse
 FLATPAGES_EXTENSION = '.md'
 # enables triple-backticks for surrounding code blocks
-FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'fenced_code']
+FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'fenced_code', 'tables']
 
 freezer = Freezer()
 flatpages = FlatPages()
@@ -35,6 +35,9 @@ def home():
 def page(path):
     page = flatpages.get_or_404(path)
     return render_template('page.html', page=page)
+
+def resume():
+    return send_from_directory('./static', 'resume.pdf')
 
 def atom_feed():
     feed = AtomFeed('Recent Blog Postings',
@@ -129,6 +132,7 @@ def create_app():
         post_asset
     )
     app.add_url_rule('/<path:path>/', 'page', page)
+    app.add_url_rule('/resume.pdf', 'resume', resume)
     app.add_url_rule('/pygments.css', 'pygments_css', pygments_css)
 
     freezer.register_generator(post_url_generator)
