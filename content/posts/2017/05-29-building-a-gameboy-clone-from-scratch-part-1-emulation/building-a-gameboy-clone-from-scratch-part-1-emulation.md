@@ -273,7 +273,7 @@ and executed from RAM. The Gameboy's single address space allows for some
 pretty neat tricks like [programming a game within a game](
 http://hackaday.com/2012/11/24/programming-a-game-boy-while-playing-pokemon/). 
 
-The 16-bit bus allows for access to 65,355 locations, with separate sections
+The 16-bit bus allows for access to 65,356 locations, with separate sections
 mapped to the cartridge ROM/RAM, video RAM, internal RAM, and hardware I/O.
 The documentation floating around the internet on emulating the memory set up
 varies with respect to naming of each location, but the general map looks 
